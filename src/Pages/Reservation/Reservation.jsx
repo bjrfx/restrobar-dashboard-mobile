@@ -9,6 +9,7 @@ const Reservation = () => {
   const [loading, setLoading] = useState(true); // Track the loading state
   const [showArrow, setShowArrow] = useState(false); // State for showing the scroll-to-top button
   const [searchTerm, setSearchTerm] = useState(''); // State for search term
+  const [lastReservationId, setLastReservationId] = useState(null); // Track the last reservation ID for new reservation check
   const theme = useTheme(); // Get the current theme
 
   useEffect(() => {
@@ -29,6 +30,16 @@ const Reservation = () => {
           persons: record.fields['Persons'],
         }));
 
+        // New reservation detection logic
+        if (data.length && data[0].id !== lastReservationId) {
+          if (Notification.permission === 'granted') {
+            new Notification('New Reservation', {
+              body: `New reservation by ${data[0].name}`,
+            });
+          }
+          setLastReservationId(data[0].id);  // Update the last reservation ID
+        }
+
         setReservations(data);
         setLoading(false); // Set loading to false once data is fetched
       } catch (error) {
@@ -38,7 +49,11 @@ const Reservation = () => {
     };
 
     fetchReservations();
-  }, []);
+
+    const interval = setInterval(fetchReservations, 30000); // 30 seconds interval to check for new reservations
+
+    return () => clearInterval(interval); // Cleanup interval on unmount
+  }, [lastReservationId]);  // Dependency to fetch data again when lastReservationId changes
 
   const filteredReservations = reservations.filter(record =>
     moment(record.startDate).isSameOrAfter(moment(), 'day') &&
