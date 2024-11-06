@@ -21,6 +21,8 @@ const Reservation = () => {
           },
         });
 
+        console.log('Airtable Response:', response.data); // Log the response to debug
+
         const data = response.data.records.map(record => ({
           id: record.id,
           name: record.fields['Name'],
@@ -29,6 +31,8 @@ const Reservation = () => {
           startTime: record.fields['Start Time'],
           persons: record.fields['Persons'],
         }));
+
+        console.log('Mapped Reservations:', data); // Log the mapped data
 
         // Check if a new reservation is added (based on the latest reservation ID)
         if (data.length && data[0].id !== lastReservationId) {
