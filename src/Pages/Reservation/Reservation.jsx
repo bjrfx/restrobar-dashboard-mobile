@@ -12,48 +12,54 @@ const Reservation = () => {
   const [lastReservationId, setLastReservationId] = useState(null); // Track the last reservation ID for new reservation check
   const theme = useTheme(); // Get the current theme
 
-  useEffect(() => {
-    const fetchReservations = async () => {
-      try {
-        const response = await axios.get('https://api.airtable.com/v0/appcRUV4NMy7IsDFI/tblqkjaFo2onOs9Tm?view=Grid%20view', {
-          headers: {
-            Authorization: `Bearer patCivRJrJBScuORc.8bd709c0d76ff06234939d1fad4f2008148d0846fdb72523613b5394381dd21e`,
-          },
-        });
+  // Fetch reservations function
+  const fetchReservations = async () => {
+    try {
+      const response = await axios.get('https://api.airtable.com/v0/appcRUV4NMy7IsDFI/tblqkjaFo2onOs9Tm?view=Grid%20view', {
+        headers: {
+          Authorization: `Bearer patCivRJrJBScuORc.8bd709c0d76ff06234939d1fad4f2008148d0846fdb72523613b5394381dd21e`,
+        },
+      });
 
-        const data = response.data.records.map(record => ({
-          id: record.id,
-          name: record.fields['Name'],
-          phone: record.fields['Phone Number'],
-          startDate: record.fields['Start Date'],
-          startTime: record.fields['Start Time'],
-          persons: record.fields['Persons'],
-        }));
+      const data = response.data.records.map(record => ({
+        id: record.id,
+        name: record.fields['Name'],
+        phone: record.fields['Phone Number'],
+        startDate: record.fields['Start Date'],
+        startTime: record.fields['Start Time'],
+        persons: record.fields['Persons'],
+      }));
 
-        // New reservation detection logic
-        if (data.length && data[0].id !== lastReservationId) {
-          if (Notification.permission === 'granted') {
-            new Notification('New Reservation', {
-              body: `New reservation by ${data[0].name}`,
-            });
-          }
-          setLastReservationId(data[0].id);  // Update the last reservation ID
+      // Check if new reservation exists and trigger notification if it's a new one
+      if (data.length && data[0].id !== lastReservationId) {
+        if (Notification.permission === 'granted') {
+          new Notification('New Reservation', {
+            body: `New reservation by ${data[0].name}`,
+          });
         }
-
-        setReservations(data);
-        setLoading(false); // Set loading to false once data is fetched
-      } catch (error) {
-        console.error('Error fetching reservation data:', error);
-        setLoading(false); // Stop loading in case of error
+        setLastReservationId(data[0].id);  // Update the last reservation ID
       }
-    };
 
+      // Update state only if the data has changed
+      if (JSON.stringify(data) !== JSON.stringify(reservations)) {
+        setReservations(data);
+      }
+      setLoading(false); // Set loading to false once data is fetched
+    } catch (error) {
+      console.error('Error fetching reservation data:', error);
+      setLoading(false); // Stop loading in case of error
+    }
+  };
+
+  useEffect(() => {
+    // Initial fetch when component mounts
     fetchReservations();
 
-    const interval = setInterval(fetchReservations, 30000); // 30 seconds interval to check for new reservations
+    // Set polling interval
+    const interval = setInterval(fetchReservations, 30000); // Fetch every 30 seconds
 
     return () => clearInterval(interval); // Cleanup interval on unmount
-  }, [lastReservationId]);  // Dependency to fetch data again when lastReservationId changes
+  }, [reservations, lastReservationId]); // Dependency array to track changes in state
 
   const filteredReservations = reservations.filter(record =>
     moment(record.startDate).isSameOrAfter(moment(), 'day') &&
