@@ -15,7 +15,7 @@ import {AuthProvider} from './Components/Auth/AuthContext'
 import PrivateRoute from './Components/Auth/PrivateRoute';
 import { Navigate } from 'react-router-dom';
 import ForgotPassword from './Pages/PasswordReset/ForgotPassword';
-
+import RequestNotificationPermission from './Components/NotificationPermission/RequestNotificationPermission';
 const App = () => {
   const navigate = useNavigate();
   const [darkMode, setDarkMode] = useState(true);
@@ -38,6 +38,7 @@ const App = () => {
 
   return (
     <ThemeProvider theme={theme}>
+      <RequestNotificationPermission />
       <CssBaseline />
       <AuthProvider>
       <Routes>
