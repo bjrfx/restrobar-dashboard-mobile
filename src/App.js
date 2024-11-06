@@ -22,7 +22,6 @@ const App = () => {
   const location = useLocation();
   const [darkMode, setDarkMode] = useState(true);
   const [transitionsEnabled, setTransitionsEnabled] = useState(true);
-  const [direction, setDirection] = useState(1); // 1 for forward, -1 for backward
 
   // Set up MUI theme with dark/light mode support
   const theme = createTheme({
@@ -40,17 +39,6 @@ const App = () => {
     }
   }, [navigate]);
 
-  // Function to handle navigation and set swipe direction
-  const handleNavigation = (path) => {
-    const paths = ['/', '/reservation', '/subscription', '/archive', '/settings'];
-    const currentIndex = paths.indexOf(location.pathname);
-    const nextIndex = paths.indexOf(path);
-
-    // Set direction based on the index of the current and target paths
-    setDirection(nextIndex > currentIndex ? 1 : -1);
-    navigate(path);
-  };
-
   return (
     <ThemeProvider theme={theme}>
       <RequestNotificationPermission />
@@ -63,10 +51,9 @@ const App = () => {
                 path="/"
                 element={
                   <motion.div
-                    initial={{ x: direction === 1 ? 1000 : -1000 }}
-                    animate={{ x: 0 }}
-                    exit={{ x: direction === 1 ? -1000 : 1000 }}
-                    transition={{ duration: 0.1 }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
                   >
                     <PrivateRoute>
                       <Home />
@@ -78,10 +65,9 @@ const App = () => {
                 path="/reservation"
                 element={
                   <motion.div
-                    initial={{ x: direction === 1 ? 1000 : -1000 }}
-                    animate={{ x: 0 }}
-                    exit={{ x: direction === 1 ? -1000 : 1000 }}
-                    transition={{ duration: 0.1 }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
                   >
                     <PrivateRoute>
                       <Reservation />
@@ -93,10 +79,9 @@ const App = () => {
                 path="/subscription"
                 element={
                   <motion.div
-                    initial={{ x: direction === 1 ? 1000 : -1000 }}
-                    animate={{ x: 0 }}
-                    exit={{ x: direction === 1 ? -1000 : 1000 }}
-                    transition={{ duration: 0.1 }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
                   >
                     <PrivateRoute>
                       <Subscription />
@@ -108,10 +93,9 @@ const App = () => {
                 path="/archive"
                 element={
                   <motion.div
-                    initial={{ x: direction === 1 ? 1000 : -1000 }}
-                    animate={{ x: 0 }}
-                    exit={{ x: direction === 1 ? -1000 : 1000 }}
-                    transition={{ duration: 0.1 }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
                   >
                     <PrivateRoute>
                       <Archive />
@@ -126,15 +110,14 @@ const App = () => {
                 path="/settings"
                 element={
                   <motion.div
-                    initial={{ x: direction === 1 ? 1000 : -1000 }}
-                    animate={{ x: 0 }}
-                    exit={{ x: direction === 1 ? -1000 : 1000 }}
-                    transition={{ duration: 0.1 }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
                   >
-                    <Settings
-                      setDarkMode={setDarkMode}
-                      darkMode={darkMode}
-                      transitionsEnabled={transitionsEnabled}
+                    <Settings 
+                      setDarkMode={setDarkMode} 
+                      darkMode={darkMode} 
+                      transitionsEnabled={transitionsEnabled} 
                       setTransitionsEnabled={setTransitionsEnabled}
                     />
                   </motion.div>
@@ -144,20 +127,48 @@ const App = () => {
           </AnimatePresence>
         ) : (
           <Routes location={location} key={location.pathname}>
-            <Route path="/" element={<PrivateRoute><Home /></PrivateRoute>} />
-            <Route path="/reservation" element={<PrivateRoute><Reservation /></PrivateRoute>} />
-            <Route path="/subscription" element={<PrivateRoute><Subscription /></PrivateRoute>} />
-            <Route path="/archive" element={<PrivateRoute><Archive /></PrivateRoute>} />
+            <Route
+              path="/"
+              element={
+                <PrivateRoute>
+                  <Home />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/reservation"
+              element={
+                <PrivateRoute>
+                  <Reservation />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/subscription"
+              element={
+                <PrivateRoute>
+                  <Subscription />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/archive"
+              element={
+                <PrivateRoute>
+                  <Archive />
+                </PrivateRoute>
+              }
+            />
             <Route path="/signin" element={<Signin />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route
               path="/settings"
               element={
-                <Settings
-                  setDarkMode={setDarkMode}
-                  darkMode={darkMode}
-                  transitionsEnabled={transitionsEnabled}
+                <Settings 
+                  setDarkMode={setDarkMode} 
+                  darkMode={darkMode} 
+                  transitionsEnabled={transitionsEnabled} 
                   setTransitionsEnabled={setTransitionsEnabled}
                 />
               }
@@ -165,7 +176,7 @@ const App = () => {
           </Routes>
         )}
       </AuthProvider>
-      <LabelBottomNavigation onNavigate={handleNavigation} />
+      <LabelBottomNavigation />
       <InstallPrompt />
     </ThemeProvider>
   );
