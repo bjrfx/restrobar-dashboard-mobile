@@ -57,7 +57,7 @@ const App = () => {
       <CssBaseline />
       <AuthProvider>
         {transitionsEnabled ? (
-          <AnimatePresence mode="wait" initial={false}>
+          <AnimatePresence mode="wait">
             <Routes location={location} key={location.pathname}>
               <Route
                 path="/"
@@ -66,7 +66,7 @@ const App = () => {
                     initial={{ x: direction === 1 ? 1000 : -1000 }}
                     animate={{ x: 0 }}
                     exit={{ x: direction === 1 ? -1000 : 1000 }}
-                    transition={{ duration: 0.3 }}
+                    transition={{ duration: 0.1 }}
                   >
                     <PrivateRoute>
                       <Home />
@@ -81,7 +81,7 @@ const App = () => {
                     initial={{ x: direction === 1 ? 1000 : -1000 }}
                     animate={{ x: 0 }}
                     exit={{ x: direction === 1 ? -1000 : 1000 }}
-                    transition={{ duration: 0.3 }}
+                    transition={{ duration: 0.1 }}
                   >
                     <PrivateRoute>
                       <Reservation />
@@ -96,7 +96,7 @@ const App = () => {
                     initial={{ x: direction === 1 ? 1000 : -1000 }}
                     animate={{ x: 0 }}
                     exit={{ x: direction === 1 ? -1000 : 1000 }}
-                    transition={{ duration: 0.3 }}
+                    transition={{ duration: 0.1 }}
                   >
                     <PrivateRoute>
                       <Subscription />
@@ -111,7 +111,7 @@ const App = () => {
                     initial={{ x: direction === 1 ? 1000 : -1000 }}
                     animate={{ x: 0 }}
                     exit={{ x: direction === 1 ? -1000 : 1000 }}
-                    transition={{ duration: 0.3 }}
+                    transition={{ duration: 0.1 }}
                   >
                     <PrivateRoute>
                       <Archive />
@@ -129,7 +129,7 @@ const App = () => {
                     initial={{ x: direction === 1 ? 1000 : -1000 }}
                     animate={{ x: 0 }}
                     exit={{ x: direction === 1 ? -1000 : 1000 }}
-                    transition={{ duration: 0.3 }}
+                    transition={{ duration: 0.1 }}
                   >
                     <Settings
                       setDarkMode={setDarkMode}
