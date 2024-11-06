@@ -5,7 +5,7 @@ import { auth, db } from '../../firebase/firebaseConfig';
 import { signOut } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
 
-const Settings = ({ darkMode, setDarkMode }) => {
+const Settings = ({ darkMode, setDarkMode, transitionsEnabled, setTransitionsEnabled }) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [userData, setUserData] = useState(null);
@@ -35,12 +35,16 @@ const Settings = ({ darkMode, setDarkMode }) => {
     setDarkMode(!darkMode);
   };
 
+  const handleTransitionToggle = () => {
+    setTransitionsEnabled(!transitionsEnabled);
+  };
+
   const handleLogout = async () => {
     setLoading(true);
     try {
       await signOut(auth);
-      navigate('/settings'); // Navigate to settings page
-      window.location.reload(); // Reload the page to clear session-specific data
+      navigate('/settings');
+      window.location.reload();
     } catch (error) {
       console.error("Error logging out:", error);
     } finally {
@@ -50,16 +54,11 @@ const Settings = ({ darkMode, setDarkMode }) => {
 
   return (
     <Box sx={{ padding: 3, maxWidth: 600, margin: 'auto', position: 'relative' }}>
-      {/* Conditionally render Logout or Login button */}
       {auth.currentUser ? (
         <Button
           variant="contained"
           color="primary"
-          sx={{
-            position: 'absolute',
-            top: 16,
-            right: 16,
-          }}
+          sx={{ position: 'absolute', top: 16, right: 16 }}
           onClick={handleLogout}
           disabled={loading}
           startIcon={loading && <CircularProgress size={24} color="inherit" />}
@@ -70,18 +69,13 @@ const Settings = ({ darkMode, setDarkMode }) => {
         <Button
           variant="contained"
           color="primary"
-          sx={{
-            position: 'absolute',
-            top: 16,
-            right: 16,
-          }}
+          sx={{ position: 'absolute', top: 16, right: 16 }}
           onClick={() => navigate('/signin')}
         >
           Signin
         </Button>
       )}
 
-      {/* Profile Image at the Top Left */}
       <Box sx={{ position: 'absolute', top: 16, left: 16 }}>
         <Avatar
           alt="User Profile"
@@ -97,7 +91,6 @@ const Settings = ({ darkMode, setDarkMode }) => {
         </Avatar>
       </Box>
 
-      {/* User Info Section */}
       <Card sx={{ marginBottom: 2, marginTop: 6 }}>
         <CardContent>
           <Typography variant="h6" gutterBottom>
@@ -119,7 +112,6 @@ const Settings = ({ darkMode, setDarkMode }) => {
 
       <Divider sx={{ marginBottom: 2 }} />
 
-      {/* Dark Mode Switch */}
       <Card sx={{ marginBottom: 2 }}>
         <CardContent>
           <Typography variant="h6" gutterBottom>
@@ -128,6 +120,10 @@ const Settings = ({ darkMode, setDarkMode }) => {
           <FormControlLabel
             control={<Switch checked={darkMode} onChange={handleThemeChange} />}
             label="Dark Mode"
+          />
+          <FormControlLabel
+            control={<Switch checked={transitionsEnabled} onChange={handleTransitionToggle} />}
+            label="Page Transitions"
           />
         </CardContent>
       </Card>
