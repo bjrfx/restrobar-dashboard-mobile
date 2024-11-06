@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Box, Card, CardContent, Typography, Grid, IconButton } from '@mui/material';
 import moment from 'moment';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'; // For the Scroll to Top Icon
-
+import logo from '../../logo.png'
 const Home = () => {
   const [totalReservations, setTotalReservations] = useState(0);
   const [oldReservations, setOldReservations] = useState(0);
@@ -132,6 +132,7 @@ const Home = () => {
 
   return (
     <Box sx={{ padding: 2, paddingBottom: 70 }}> {/* Added bottom padding to avoid overlap with navigation */}
+    <img src={logo} alt="logo" style={{ display: 'block', marginLeft: 'auto', marginRight: 'auto', width: '50%', marginTop: '10px', marginBottom: '10px' }} />
       <Typography variant="h4" align="center" gutterBottom>
         Reservation Summary
       </Typography>
