@@ -14,7 +14,7 @@ import Signup from './Pages/signup/Signup';
 import { AuthProvider } from './Components/Auth/AuthContext';
 import PrivateRoute from './Components/Auth/PrivateRoute';
 import ForgotPassword from './Pages/PasswordReset/ForgotPassword';
-import RequestNotificationPermission from './Components/NotificationPermission/RequestNotificationPermission';
+// import RequestNotificationPermission from './Components/NotificationPermission/RequestNotificationPermission';
 import { AnimatePresence, motion } from 'framer-motion';
 
 const App = () => {
@@ -49,7 +49,7 @@ const App = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <RequestNotificationPermission />
+      {/* <RequestNotificationPermission /> */}
       <CssBaseline />
       <AuthProvider>
         <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
