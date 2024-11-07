@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import { Skeleton, Box, Card, CardContent, Typography, Grid, TextField, IconButton, useTheme } from '@mui/material';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
@@ -9,8 +9,9 @@ const Archive = () => {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredRecords, setFilteredRecords] = useState([]);
-  const [showArrow, setShowArrow] = useState(false); // Scroll to top button visibility
-  const theme = useTheme(); // Get the current theme
+  const [showArrow, setShowArrow] = useState(false);
+  const theme = useTheme();
+  const [visibleCards, setVisibleCards] = useState({});
 
   useEffect(() => {
     const fetchRecords = async () => {
@@ -39,7 +40,6 @@ const Archive = () => {
     fetchRecords();
   }, []);
 
-  // Handle search query change
   useEffect(() => {
     setFilteredRecords(
       records.filter(record =>
@@ -48,7 +48,6 @@ const Archive = () => {
     );
   }, [searchQuery, records]);
 
-  // Handle scroll-to-top button visibility
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 300) {
@@ -69,6 +68,34 @@ const Archive = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const observer = useRef(null);
+
+  useEffect(() => {
+    observer.current = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          setVisibleCards(prev => ({
+            ...prev,
+            [entry.target.id]: entry.isIntersecting,
+          }));
+        });
+      },
+      {
+        threshold: 0.1,
+      }
+    );
+
+    document.querySelectorAll('.archive-card').forEach(card => {
+      observer.current.observe(card);
+    });
+
+    return () => {
+      if (observer.current) {
+        observer.current.disconnect();
+      }
+    };
+  }, [filteredRecords]);
+
   return (
     <Box sx={{ padding: 2, paddingBottom: 70 }}>
       <Typography variant="h4" align="center" gutterBottom>
@@ -76,7 +103,6 @@ const Archive = () => {
       </Typography>
       <hr />
 
-      {/* Search bar */}
       <TextField
         fullWidth
         label="Search by Name"
@@ -87,7 +113,6 @@ const Archive = () => {
       />
 
       {loading ? (
-        // Skeleton loader
         <Grid container spacing={2} justifyContent="center">
           {[...Array(3)].map((_, index) => (
             <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
@@ -102,11 +127,18 @@ const Archive = () => {
           ))}
         </Grid>
       ) : (
-        // Render the filtered records once the data is loaded
         <Grid container spacing={2} justifyContent="center">
           {filteredRecords.map((record) => (
             <Grid item xs={12} sm={6} md={4} lg={3} key={record.id}>
-              <Card>
+              <Card
+                id={record.id}
+                className="archive-card"
+                sx={{
+                  opacity: visibleCards[record.id] ? 1 : 0.8,
+                  transform: visibleCards[record.id] ? 'translateY(0)' : 'translateY(25px)',
+                  transition: 'opacity 0.1s ease-out, transform 0.2s ease-out',
+                }}
+              >
                 <CardContent>
                   <Typography variant="h6">Name: {record.name}</Typography>
                   <Typography variant="body1">Phone Number: {record.phoneNumber}</Typography>
@@ -118,20 +150,19 @@ const Archive = () => {
         </Grid>
       )}
 
-      {/* Scroll-to-top button */}
       {showArrow && (
         <IconButton
           onClick={scrollToTop}
           sx={{
             position: 'fixed',
-            bottom: 80, // Adjust this value if needed
+            bottom: 80,
             right: 20,
-            backgroundColor: theme.palette.mode === 'dark' ? '#fff' : '#000', // Circle color based on mode
-            color: theme.palette.mode === 'dark' ? '#000' : '#fff', // Arrow color based on mode
+            backgroundColor: theme.palette.mode === 'dark' ? '#fff' : '#000',
+            color: theme.palette.mode === 'dark' ? '#000' : '#fff',
             borderRadius: '50%',
             padding: '10px',
             boxShadow: 3,
-            zIndex: 9999, // Ensure the button is above other elements like bottom navigation
+            zIndex: 9999,
             '&:hover': {
               backgroundColor: theme.palette.mode === 'dark' ? '#ddd' : '#444',
             },

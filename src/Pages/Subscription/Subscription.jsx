@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import { Skeleton, Box, Card, CardContent, Typography, Grid, IconButton, TextField, useTheme } from '@mui/material';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 
 const Subscription = () => {
   const [subscriptions, setSubscriptions] = useState([]);
-  const [loading, setLoading] = useState(true); // Track the loading state
-  const [showArrow, setShowArrow] = useState(false); // State for showing the scroll-to-top button
-  const [searchTerm, setSearchTerm] = useState(''); // State for search term
-  const theme = useTheme(); // Get the current theme
+  const [loading, setLoading] = useState(true);
+  const [showArrow, setShowArrow] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const theme = useTheme();
+  const [visibleCards, setVisibleCards] = useState({});
 
   useEffect(() => {
     const fetchSubscriptions = async () => {
@@ -21,14 +22,14 @@ const Subscription = () => {
 
         const data = response.data.records.map(record => ({
           id: record.id,
-          email: record.fields['Email'], // Assuming 'Email' is the field name
+          email: record.fields['Email'],
         }));
 
         setSubscriptions(data);
-        setLoading(false); // Set loading to false once data is fetched
+        setLoading(false);
       } catch (error) {
         console.error('Error fetching subscription data:', error);
-        setLoading(false); // Stop loading in case of error
+        setLoading(false);
       }
     };
 
@@ -39,26 +40,43 @@ const Subscription = () => {
     subscription.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Handle scroll-to-top button visibility
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 300) {
-        setShowArrow(true);
-      } else {
-        setShowArrow(false);
-      }
+      setShowArrow(window.scrollY > 300);
     };
 
     window.addEventListener('scroll', handleScroll);
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  // Observer for fade-in and fade-out animation
+  const observer = useRef(null);
+
+  useEffect(() => {
+    observer.current = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          setVisibleCards(prev => ({
+            ...prev,
+            [entry.target.id]: entry.isIntersecting,
+          }));
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    document.querySelectorAll('.subscription-card').forEach(card => {
+      observer.current.observe(card);
+    });
+
+    return () => {
+      if (observer.current) observer.current.disconnect();
+    };
+  }, [filteredSubscriptions]);
 
   return (
     <Box sx={{ padding: 2, paddingBottom: 70 }}>
@@ -67,7 +85,6 @@ const Subscription = () => {
       </Typography>
       <hr />
 
-      {/* Search Field */}
       <TextField
         label="Search by Email"
         variant="outlined"
@@ -78,7 +95,6 @@ const Subscription = () => {
       />
 
       {loading ? (
-        // Show skeleton loader while loading
         <Grid container spacing={2} justifyContent="center">
           {[...Array(3)].map((_, index) => (
             <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
@@ -91,11 +107,18 @@ const Subscription = () => {
           ))}
         </Grid>
       ) : (
-        // Render actual content once data is loaded
         <Grid container spacing={2} justifyContent="center">
           {filteredSubscriptions.map((subscription) => (
             <Grid item xs={12} sm={6} md={4} lg={3} key={subscription.id}>
-              <Card>
+              <Card
+                id={subscription.id}
+                className="subscription-card"
+                sx={{
+                  opacity: visibleCards[subscription.id] ? 1 : 0.5,
+                  transform: visibleCards[subscription.id] ? 'translateY(0)' : 'translateY(25px)',
+                  transition: 'opacity 0.1s ease-out, transform 0.2s ease-out',
+                }}
+              >
                 <CardContent>
                   <Typography variant="h6">Email: {subscription.email}</Typography>
                 </CardContent>
@@ -105,20 +128,19 @@ const Subscription = () => {
         </Grid>
       )}
 
-      {/* Scroll-to-top button */}
       {showArrow && (
         <IconButton
           onClick={scrollToTop}
           sx={{
             position: 'fixed',
-            bottom: 80, // Adjust this value if needed
+            bottom: 80,
             right: 20,
-            backgroundColor: theme.palette.mode === 'dark' ? '#fff' : '#000', // Circle color based on mode
-            color: theme.palette.mode === 'dark' ? '#000' : '#fff', // Arrow color based on mode
+            backgroundColor: theme.palette.mode === 'dark' ? '#fff' : '#000',
+            color: theme.palette.mode === 'dark' ? '#000' : '#fff',
             borderRadius: '50%',
             padding: '10px',
             boxShadow: 3,
-            zIndex: 9999, // Ensure the button is above other elements like bottom navigation
+            zIndex: 9999,
             '&:hover': {
               backgroundColor: theme.palette.mode === 'dark' ? '#ddd' : '#444',
             },

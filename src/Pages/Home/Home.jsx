@@ -1,11 +1,13 @@
 import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
-import { Box, Card, CardContent, Typography, Grid, IconButton, Container } from '@mui/material';
+import { Box, Card, CardContent, Typography, Grid, IconButton, Container, AppBar, Toolbar } from '@mui/material';
 import { Line, Bar, Pie } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, ArcElement, Tooltip, Legend } from 'chart.js';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import moment from 'moment';
 import logo from '../../logo.png';
+import UserInfo from '../../Components/UserInfo/UserInfo';
+import ModalTemplate from '../../Components/Modal/ModalTemplate';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, ArcElement, Tooltip, Legend);
 
@@ -31,6 +33,7 @@ const useObserveVisibility = (ref) => {
 };
 
 const Home = () => {
+  const userData = UserInfo();
   const [totalReservations, setTotalReservations] = useState(0);
   const [activeReservations, setActiveReservations] = useState(0);
   const [totalArchives, setTotalArchives] = useState(0);
@@ -38,7 +41,7 @@ const Home = () => {
   const [archiveMonthlyData, setArchiveMonthlyData] = useState([]);
   const [dynamicDescription, setDynamicDescription] = useState("");
   const [showScrollToTop, setShowScrollToTop] = useState(false);
-  const [fadeIn, setFadeIn] = useState(false); // State to trigger fade-in animation
+  const [fadeIn, setFadeIn] = useState(false);
 
   const [animatedTotalReservations, setAnimatedTotalReservations] = useState(0);
   const [animatedActiveReservations, setAnimatedActiveReservations] = useState(0);
@@ -117,7 +120,7 @@ const Home = () => {
         setAveragePartySize(totalPersons / total);
         const description = createDynamicDescription(total, active, totalPersons, times);
         setDynamicDescription(description);
-        setFadeIn(true); // Trigger fade-in when data is ready
+        setFadeIn(true);
         animateNumber(total, setAnimatedTotalReservations);
         animateNumber(active, setAnimatedActiveReservations);
 
@@ -168,90 +171,121 @@ const Home = () => {
   };
 
   return (
-    <Container maxWidth="md" sx={{ paddingTop: 4, paddingBottom: 4 }}>
-      <Box sx={{ textAlign: 'center', marginBottom: 4 }}>
-        <img src={logo} alt="logo" style={{ width: '40%', marginBottom: 16 }} />
-        <Typography variant="h4" gutterBottom>
-          Reservation & Archive Summary
-        </Typography>
-        <Typography
-          variant="body1"
-          sx={{
-            marginTop: 2,
-            marginBottom: 4,
-            opacity: fadeIn ? 1 : 0,
-            transition: 'opacity 1s ease-in-out', // Fade-in effect
-          }}
-        >
-          {dynamicDescription}
-        </Typography>
-        <hr style={{ width: '50%', margin: 'auto' }} />
-      </Box>
+    <Box sx={{ padding: 0, margin: 0 }}>
+      <AppBar position="sticky" sx={{ margin: 0, top: 0, left: 0, right: 0, boxShadow: 'none' }}>
+        <Toolbar sx={{ justifyContent: 'space-between' }}>
+          <Box component="img" src={logo} alt="Logo" sx={{ height: 40 }} />
+          <Typography variant="p" sx={{ marginLeft: 'auto' }}>
+            {userData?.name ? `${userData.name}'s Dashboard` : "Dashboard"}
+          </Typography>
+        </Toolbar>
+      </AppBar>
+      {/* Modal commented because it's not responsive; solve later */}
+      {/* <ModalTemplate
+        title={
+          <Typography variant="h5" sx={{ textAlign: 'center', marginY: 4 }}>
+            {userData?.name ? `Welcome back, ${userData.name}!` : "Welcome to your dashboard!"}
+          </Typography>
+        }
+        content={
+          <Typography variant="body1" sx={{ textAlign: 'center', color: 'text.secondary', marginY: 2 }}>
+            {userData?.name
+              ? `It's great to see you again, ${userData.name}. Here you can manage your reservations, check recent activities, and keep an eye on your records. Let's make today productive!`
+              : `Here you can manage your reservations, check recent activities, and keep track of all your records. Let’s get started!`}
+          </Typography>
+        }
+      /> */}
+      {/* Modal end */}
 
-      <Grid container spacing={3} justifyContent="center">
-        <Grid item xs={12} sm={6} md={4}>
-          <Card>
-            <CardContent>
-              <Typography variant="h6" align="center">Total Reservations</Typography>
-              <Typography variant="h4" align="center">{animatedTotalReservations}</Typography>
-            </CardContent>
-          </Card>
+      <Container maxWidth="md" sx={{ paddingTop: 4, paddingBottom: 4 }}>
+        <Box sx={{ textAlign: 'center', marginBottom: 4, marginTop: 4 }}>
+          <Typography variant="h5" sx={{ mb: 1 }}>
+            Welcome back, {userData?.name || "User"}
+          </Typography>
+          <Typography variant="h5" gutterBottom>
+            Checkout Reservation & Archive Summary
+          </Typography>
+          <Typography
+            variant="p"
+            sx={{
+              marginTop: 2,
+              marginBottom: 4,
+              opacity: fadeIn ? 1 : 0,
+              transition: 'opacity 1s ease-in-out',
+              fontFamily: 'Roboto, sans-serif',
+              fontWeight: 200,
+            }}
+          >
+            {dynamicDescription}
+          </Typography>
+          <hr style={{ width: '50%', margin: 'auto' }} />
+        </Box>
+
+        <Grid container spacing={3} justifyContent="center">
+          <Grid item xs={12} sm={6} md={4}>
+            <Card>
+              <CardContent>
+                <Typography variant="h6" align="center">Total Reservations</Typography>
+                <Typography variant="h4" align="center">{animatedTotalReservations}</Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid item xs={12} sm={6} md={4}>
+            <Card>
+              <CardContent>
+                <Typography variant="h6" align="center">Active Reservations</Typography>
+                <Typography variant="h4" align="center">{animatedActiveReservations}</Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid item xs={12} sm={6} md={4}>
+            <Card>
+              <CardContent>
+                <Typography variant="h6" align="center">Total Archives</Typography>
+                <Typography variant="h4" align="center">{animatedTotalArchives}</Typography>
+              </CardContent>
+            </Card>
+          </Grid>
         </Grid>
-        <Grid item xs={12} sm={6} md={4}>
-          <Card>
-            <CardContent>
-              <Typography variant="h6" align="center">Active Reservations</Typography>
-              <Typography variant="h4" align="center">{animatedActiveReservations}</Typography>
-            </CardContent>
+
+        <Box sx={{ marginTop: 6 }} ref={lineChartRef}>
+          <Card sx={{ padding: 2 }}>
+            <Typography variant="h6" align="center" gutterBottom>Reservations Over the Past 7 Days</Typography>
+            {lineChartVisible && <Line data={lineData} />}
           </Card>
-        </Grid>
-        <Grid item xs={12} sm={6} md={4}>
-          <Card>
-            <CardContent>
-              <Typography variant="h6" align="center">Total Archives</Typography>
-              <Typography variant="h4" align="center">{animatedTotalArchives}</Typography>
-            </CardContent>
+        </Box>
+
+        <Box sx={{ marginTop: 6 }} ref={barChartRef}>
+          <Card sx={{ padding: 2 }}>
+            <Typography variant="h6" align="center" gutterBottom>Archives Over the Past 30 Days</Typography>
+            {barChartVisible && <Bar data={barData} />}
           </Card>
-        </Grid>
-      </Grid>
+        </Box>
 
-      <Box sx={{ marginTop: 6 }} ref={lineChartRef}>
-        <Card sx={{ padding: 2 }}>
-          <Typography variant="h6" align="center" gutterBottom>Reservations Over the Past 7 Days</Typography>
-          {lineChartVisible && <Line data={lineData} />}
-        </Card>
-      </Box>
+        <Box sx={{ marginTop: 6 }} ref={pieChartRef}>
+          <Card sx={{ padding: 2 }}>
+            <Typography variant="h6" align="center" gutterBottom>Reservations by Time of Day</Typography>
+            {pieChartVisible && <Pie data={{ labels: ['Morning', 'Afternoon', 'Evening', 'Night'], datasets: [{ data: [4, 5, 7, 2], backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0'] }] }} />}
+          </Card>
+        </Box>
 
-      <Box sx={{ marginTop: 6 }} ref={barChartRef}>
-        <Card sx={{ padding: 2 }}>
-          <Typography variant="h6" align="center" gutterBottom>Archives Over the Past 30 Days</Typography>
-          {barChartVisible && <Bar data={barData} />}
-        </Card>
-      </Box>
-
-      <Box sx={{ marginTop: 6 }} ref={pieChartRef}>
-        <Card sx={{ padding: 2 }}>
-          <Typography variant="h6" align="center" gutterBottom>Reservations by Time of Day</Typography>
-          {pieChartVisible && <Pie data={{ labels: ['Morning', 'Afternoon', 'Evening', 'Night'], datasets: [{ data: [4, 5, 7, 2], backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0'] }] }} />}
-        </Card>
-      </Box>
-
-      {showScrollToTop && (
-        <IconButton
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          sx={{
-            position: 'fixed',
-            bottom: 90,
-            right: 30,
-            backgroundColor: 'primary.main',
-            color: 'white',
-            '&:hover': { backgroundColor: 'primary.dark' },
-          }}
-        >
-          <KeyboardArrowUpIcon />
-        </IconButton>
-      )}
-    </Container>
+        {showScrollToTop && (
+          <IconButton
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            sx={{
+              position: 'fixed',
+              bottom: 90,
+              right: 30,
+              backgroundColor: 'primary.main',
+              color: 'white',
+              '&:hover': { backgroundColor: 'primary.dark' },
+            }}
+          >
+            <KeyboardArrowUpIcon />
+          </IconButton>
+        )}
+      </Container>
+    </Box>
   );
 };
 

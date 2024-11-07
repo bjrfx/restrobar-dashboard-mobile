@@ -12,23 +12,32 @@ export default function LabelBottomNavigation() {
   const [value, setValue] = React.useState(0);
   const navigate = useNavigate();
 
+  const handleClick = (to) => {
+    navigate(to);
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'smooth'
+    });
+  };
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
     switch (newValue) {
       case 0:
-        navigate('/');
+        handleClick('/');
         break;
       case 1:
-        navigate('/reservation');
+        handleClick('/reservation');
         break;
       case 2:
-        navigate('/subscription');
+        handleClick('/subscription');
         break;
       case 3:
-        navigate('/archive');
+        handleClick('/archive');
         break;
       case 4:
-        navigate('/settings');
+        handleClick('/settings');
         break;
       default:
         break;
