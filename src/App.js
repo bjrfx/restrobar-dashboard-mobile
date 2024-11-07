@@ -54,114 +54,91 @@ const App = () => {
       <AuthProvider>
         <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
           <div style={{ flex: 1, paddingBottom: '56px' }}>
-            {transitionsEnabled ? (
-              <AnimatePresence mode="wait" initial={false}>
-                <Routes location={location} key={location.pathname}>
-                  <Route
-                    path="/"
-                    element={
+            <AnimatePresence mode="wait" initial={false}>
+              <Routes location={location}>
+                <Route
+                  path="/"
+                  element={
+                    <PrivateRoute>
                       <motion.div
                         initial={{ x: direction === 1 ? 1000 : -1000 }}
                         animate={{ x: 0 }}
-                        exit={{ x: direction === 1 ? 1000 : -1000 }}
+                        exit={{ x: direction === 1 ? -1000 : 1000 }}
                         transition={{ duration: 0.2 }}
                       >
-                        <PrivateRoute>
-                          <Home />
-                        </PrivateRoute>
+                        <Home />
                       </motion.div>
-                    }
-                  />
-                  <Route
-                    path="/reservation"
-                    element={
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/reservation"
+                  element={
+                    <PrivateRoute>
                       <motion.div
-                        initial={{ x: direction === 1 ? -1000 : 1000 }}
+                        initial={{ x: direction === 1 ? 1000 : -1000 }}
                         animate={{ x: 0 }}
-                        exit={{ x: direction === 1 ? -1000 : -1000 }}
+                        exit={{ x: direction === 1 ? -1000 : 1000 }}
                         transition={{ duration: 0.2 }}
                       >
-                        <PrivateRoute>
-                          <Reservation />
-                        </PrivateRoute>
+                        <Reservation />
                       </motion.div>
-                    }
-                  />
-                  <Route
-                    path="/subscription"
-                    element={
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/subscription"
+                  element={
+                    <PrivateRoute>
                       <motion.div
-                        initial={{ x: direction === 1 ? -1000 : 1000 }}
+                        initial={{ x: direction === 1 ? 1000 : -1000 }}
                         animate={{ x: 0 }}
-                        exit={{ x: direction === 1 ? 1000 : -1000 }}
+                        exit={{ x: direction === 1 ? -1000 : 1000 }}
                         transition={{ duration: 0.2 }}
                       >
-                        <PrivateRoute>
-                          <Subscription />
-                        </PrivateRoute>
+                        <Subscription />
                       </motion.div>
-                    }
-                  />
-                  <Route
-                    path="/archive"
-                    element={
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/archive"
+                  element={
+                    <PrivateRoute>
                       <motion.div
-                        initial={{ x: direction === 1 ? -1000 : 1000 }}
+                        initial={{ x: direction === 1 ? 1000 : -1000 }}
                         animate={{ x: 0 }}
-                        exit={{ x: direction === 1 ? 1000 : -1000 }}
+                        exit={{ x: direction === 1 ? -1000 : 1000 }}
                         transition={{ duration: 0.2 }}
                       >
-                        <PrivateRoute>
-                          <Archive />
-                        </PrivateRoute>
+                        <Archive />
                       </motion.div>
-                    }
-                  />
-                  <Route path="/signin" element={<Signin />} />
-                  <Route path="/signup" element={<Signup />} />
-                  <Route path="/forgot-password" element={<ForgotPassword />} />
-                  <Route
-                    path="/settings"
-                    element={
-                      <motion.div
-                        initial={{ x: direction === 1 ? -1000 : 1000 }}
-                        animate={{ x: 0 }}
-                        exit={{ x: direction === 1 ? 1000 : -1000 }}
-                        transition={{ duration: 0.2 }}
-                      >
-                        <Settings
-                          setDarkMode={setDarkMode}
-                          darkMode={darkMode}
-                          transitionsEnabled={transitionsEnabled}
-                          setTransitionsEnabled={setTransitionsEnabled}
-                        />
-                      </motion.div>
-                    }
-                  />
-                </Routes>
-              </AnimatePresence>
-            ) : (
-              <Routes location={location} key={location.pathname}>
-                <Route path="/" element={<PrivateRoute><Home /></PrivateRoute>} />
-                <Route path="/reservation" element={<PrivateRoute><Reservation /></PrivateRoute>} />
-                <Route path="/subscription" element={<PrivateRoute><Subscription /></PrivateRoute>} />
-                <Route path="/archive" element={<PrivateRoute><Archive /></PrivateRoute>} />
+                    </PrivateRoute>
+                  }
+                />
                 <Route path="/signin" element={<Signin />} />
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route
                   path="/settings"
                   element={
-                    <Settings
-                      setDarkMode={setDarkMode}
-                      darkMode={darkMode}
-                      transitionsEnabled={transitionsEnabled}
-                      setTransitionsEnabled={setTransitionsEnabled}
-                    />
+                    <motion.div
+                      initial={{ x: direction === 1 ? 1000 : -1000 }}
+                      animate={{ x: 0 }}
+                      exit={{ x: direction === 1 ? -1000 : 1000 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <Settings
+                        setDarkMode={setDarkMode}
+                        darkMode={darkMode}
+                        transitionsEnabled={transitionsEnabled}
+                        setTransitionsEnabled={setTransitionsEnabled}
+                      />
+                    </motion.div>
                   }
                 />
               </Routes>
-            )}
+            </AnimatePresence>
           </div>
           <InstallPrompt />
         </div>

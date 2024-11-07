@@ -53,7 +53,7 @@ const Settings = ({ darkMode, setDarkMode, transitionsEnabled, setTransitionsEna
   };
 
   return (
-    <Box sx={{ padding: 3, maxWidth: 600, margin: 'auto', position: 'relative' }}>
+    <Box sx={{ padding: 3, maxWidth: 600, margin: 'auto', position: 'relative', height: '80vh' }}>
       {auth.currentUser ? (
         <Button
           variant="contained"
@@ -127,6 +127,7 @@ const Settings = ({ darkMode, setDarkMode, transitionsEnabled, setTransitionsEna
           />
         </CardContent>
       </Card>
+      <p style={{ position: 'absolute', bottom: 0, left: '50%', transform: 'translateX(-50%)', textAlign: 'center'}}>Version 1.0</p>
     </Box>
   );
 };
