@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Switch, FormControlLabel, Typography, Box, Button, CircularProgress, Card, CardContent, Divider, Avatar, Skeleton } from '@mui/material';
+import { Switch, FormControlLabel, Typography, Box, Button, CircularProgress, Card, CardContent, Divider, Avatar, Skeleton, ButtonBase } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { auth, db } from '../../firebase/firebaseConfig';
 import { signOut } from 'firebase/auth';
@@ -90,9 +90,9 @@ const Settings = ({ darkMode, setDarkMode, transitionsEnabled, setTransitionsEna
           />
         </Avatar>
       </Box>
-
-      <Card sx={{ marginBottom: 2, marginTop: 6 }}>
-        <CardContent>
+      <ButtonBase focusRipple sx={{width: '100%', display: 'block'}}>
+      <Card sx={{ marginBottom: 2, marginTop: 10 }}>
+        <CardContent sx={{textAlign: 'left'}}>
           <Typography variant="h6" gutterBottom>
             User Information
           </Typography>
@@ -109,11 +109,12 @@ const Settings = ({ darkMode, setDarkMode, transitionsEnabled, setTransitionsEna
           )}
         </CardContent>
       </Card>
+      </ButtonBase>
 
       <Divider sx={{ marginBottom: 2 }} />
-
+      <ButtonBase focusRipple sx={{width: '100%', display: 'block'}}>
       <Card sx={{ marginBottom: 2 }}>
-        <CardContent>
+        <CardContent sx={{textAlign: 'left'}}>
           <Typography variant="h6" gutterBottom>
             Theme Settings
           </Typography>
@@ -127,6 +128,7 @@ const Settings = ({ darkMode, setDarkMode, transitionsEnabled, setTransitionsEna
           />
         </CardContent>
       </Card>
+      </ButtonBase>
       <p style={{ position: 'absolute', bottom: 0, left: '50%', transform: 'translateX(-50%)', textAlign: 'center'}}>Version 0.1.1</p>
     </Box>
   );

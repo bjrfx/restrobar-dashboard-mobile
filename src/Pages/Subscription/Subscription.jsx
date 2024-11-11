@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
-import { Skeleton, Box, Card, CardContent, Typography, Grid, IconButton, TextField, useTheme } from '@mui/material';
+import { Skeleton, Box, Card, CardContent, Typography, Grid, IconButton, TextField, useTheme, ButtonBase } from '@mui/material';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 
 const Subscription = () => {
@@ -110,6 +110,7 @@ const Subscription = () => {
         <Grid container spacing={2} justifyContent="center">
           {filteredSubscriptions.map((subscription) => (
             <Grid item xs={12} sm={6} md={4} lg={3} key={subscription.id}>
+              <ButtonBase focusRipple sx={{width: '100%', display: 'block'}}>
               <Card
                 id={subscription.id}
                 className="subscription-card"
@@ -119,10 +120,11 @@ const Subscription = () => {
                   transition: 'opacity 0.1s ease-out, transform 0.2s ease-out',
                 }}
               >
-                <CardContent>
+                <CardContent >
                   <Typography variant="h6">Email: {subscription.email}</Typography>
                 </CardContent>
               </Card>
+              </ButtonBase>
             </Grid>
           ))}
         </Grid>

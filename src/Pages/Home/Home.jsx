@@ -226,7 +226,7 @@ const Home = () => {
             <Card>
               <CardContent>
                 <Typography variant="h6" align="center">Total Reservations</Typography>
-                <Typography variant="h4" align="center">{animatedTotalReservations}</Typography>
+                <Typography variant="h4" align="center">{animatedTotalReservations + animatedTotalArchives}</Typography>
               </CardContent>
             </Card>
           </Grid>
@@ -243,6 +243,15 @@ const Home = () => {
               <CardContent>
                 <Typography variant="h6" align="center">Total Archives</Typography>
                 <Typography variant="h4" align="center">{animatedTotalArchives}</Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid item xs={12} sm={6} md={4}>
+            <Card>
+              <CardContent>
+                <Typography variant="h6" align="center">Total Reservations In Database 1</Typography>
+                <Typography variant="p" component='p' align="center">*Threshold = {animatedTotalReservations} / 1200</Typography>
+                <Typography variant="h4" align="center">{animatedTotalReservations}</Typography>
               </CardContent>
             </Card>
           </Grid>

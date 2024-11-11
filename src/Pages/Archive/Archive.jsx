@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
-import { Skeleton, Box, Card, CardContent, Typography, Grid, TextField, IconButton, useTheme } from '@mui/material';
+import { Skeleton, Box, Card, CardContent, Typography, Grid, TextField, IconButton, useTheme, ButtonBase } from '@mui/material';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import moment from 'moment';
 
@@ -130,6 +130,7 @@ const Archive = () => {
         <Grid container spacing={2} justifyContent="center">
           {filteredRecords.map((record) => (
             <Grid item xs={12} sm={6} md={4} lg={3} key={record.id}>
+              <ButtonBase focusRipple sx={{width: '100%', display: 'block'}}>
               <Card
                 id={record.id}
                 className="archive-card"
@@ -139,12 +140,13 @@ const Archive = () => {
                   transition: 'opacity 0.1s ease-out, transform 0.2s ease-out',
                 }}
               >
-                <CardContent>
-                  <Typography variant="h6">Name: {record.name}</Typography>
+                <CardContent sx={{textAlign: 'left'}}>
+                  <Typography variant="h6">{record.name}</Typography>
                   <Typography variant="body1">Phone Number: {record.phoneNumber}</Typography>
                   <Typography variant="body2">Start Date: {moment(record.startDate).format('MMMM Do YYYY')}</Typography>
                 </CardContent>
               </Card>
+              </ButtonBase>
             </Grid>
           ))}
         </Grid>

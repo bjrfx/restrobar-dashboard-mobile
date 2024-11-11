@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
-import { Skeleton, Box, Card, CardContent, Typography, Grid, IconButton, TextField, useTheme } from '@mui/material';
+import { Skeleton, Box, Card, CardContent, Typography, Grid, IconButton, TextField, useTheme, ButtonBase } from '@mui/material';
 import moment from 'moment';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 
@@ -100,7 +100,7 @@ const Reservation = () => {
   return (
     <Box sx={{ padding: 2 }}>
       <Typography variant="h4" align="center" gutterBottom>
-        Reservation List
+      Reservation List
       </Typography>
       <hr />
 
@@ -132,6 +132,7 @@ const Reservation = () => {
         <Grid container spacing={2} justifyContent="center">
           {filteredReservations.map((reservation) => (
             <Grid item xs={12} sm={6} md={4} lg={3} key={reservation.id}>
+              <ButtonBase focusRipple sx={{width: '100%', display: 'block'}}>
               <Card
                 id={reservation.id}
                 className="reservation-card"
@@ -141,7 +142,7 @@ const Reservation = () => {
                   transition: 'opacity 0.2s ease-out, transform 0.2s ease-out',
                 }}
               >
-                <CardContent>
+                <CardContent sx={{textAlign: 'left'}}>
                   <Typography variant="h6">{reservation.name}</Typography>
                   <Typography variant="body2">Phone: {reservation.phone}</Typography>
                   <Typography variant="body2">Date: {moment(reservation.startDate).format('MMM Do YYYY')}</Typography>
@@ -149,6 +150,7 @@ const Reservation = () => {
                   <Typography variant="body2">Persons: {reservation.persons}</Typography>
                 </CardContent>
               </Card>
+              </ButtonBase>
             </Grid>
           ))}
         </Grid>
