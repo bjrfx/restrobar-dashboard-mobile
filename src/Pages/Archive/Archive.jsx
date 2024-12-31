@@ -1,6 +1,17 @@
 import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
-import { Skeleton, Box, Card, CardContent, Typography, Grid, TextField, IconButton, useTheme, ButtonBase } from '@mui/material';
+import {
+  Skeleton,
+  Box,
+  Card,
+  CardContent,
+  Typography,
+  Grid,
+  TextField,
+  IconButton,
+  useTheme,
+  ButtonBase,
+} from '@mui/material';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import moment from 'moment';
 
@@ -15,22 +26,41 @@ const Archive = () => {
 
   useEffect(() => {
     const fetchRecords = async () => {
+      let allRecords = [];
+      let offset = null;
+
       try {
-        const response = await axios.get('https://api.airtable.com/v0/appR9pTEld4i3NTFJ/tblm0Bfb2n9HlvjdJ?view=Grid%20view', {
-          headers: {
-            Authorization: `Bearer patCivRJrJBScuORc.8bd709c0d76ff06234939d1fad4f2008148d0846fdb72523613b5394381dd21e`,
-          },
-        });
+        do {
+          const response = await axios.get(
+            'https://api.airtable.com/v0/appR9pTEld4i3NTFJ/tblm0Bfb2n9HlvjdJ?view=Grid%20view',
+            {
+              headers: {
+                Authorization: `Bearer patCivRJrJBScuORc.8bd709c0d76ff06234939d1fad4f2008148d0846fdb72523613b5394381dd21e`,
+              },
+              params: {
+                offset: offset, // Pass the offset for pagination
+              },
+            }
+          );
 
-        const data = response.data.records.map(record => ({
-          id: record.id,
-          name: record.fields['Name'],
-          phoneNumber: record.fields['Phone Number'],
-          startDate: record.fields['Start Date'],
-        }));
+          const { records, offset: nextOffset } = response.data;
 
-        setRecords(data);
-        setLoading(false);
+          // Add fetched records to allRecords
+          allRecords = [
+            ...allRecords,
+            ...records.map((record) => ({
+              id: record.id,
+              name: record.fields['Name'],
+              phoneNumber: record.fields['Phone Number'],
+              startDate: record.fields['Start Date'],
+            })),
+          ];
+
+          offset = nextOffset; // Update offset for the next request
+        } while (offset); // Continue until offset is null
+
+        setRecords(allRecords); // Set all records to state
+        setLoading(false); // Set loading to false
       } catch (error) {
         console.error('Error fetching data:', error);
         setLoading(false);
@@ -42,7 +72,7 @@ const Archive = () => {
 
   useEffect(() => {
     setFilteredRecords(
-      records.filter(record =>
+      records.filter((record) =>
         record.name.toLowerCase().includes(searchQuery.toLowerCase())
       )
     );
@@ -72,9 +102,9 @@ const Archive = () => {
 
   useEffect(() => {
     observer.current = new IntersectionObserver(
-      entries => {
-        entries.forEach(entry => {
-          setVisibleCards(prev => ({
+      (entries) => {
+        entries.forEach((entry) => {
+          setVisibleCards((prev) => ({
             ...prev,
             [entry.target.id]: entry.isIntersecting,
           }));
@@ -85,7 +115,7 @@ const Archive = () => {
       }
     );
 
-    document.querySelectorAll('.archive-card').forEach(card => {
+    document.querySelectorAll('.archive-card').forEach((card) => {
       observer.current.observe(card);
     });
 
@@ -130,22 +160,28 @@ const Archive = () => {
         <Grid container spacing={2} justifyContent="center">
           {filteredRecords.map((record) => (
             <Grid item xs={12} sm={6} md={4} lg={3} key={record.id}>
-              <ButtonBase focusRipple sx={{width: '100%', display: 'block'}}>
-              <Card
-                id={record.id}
-                className="archive-card"
-                sx={{
-                  opacity: visibleCards[record.id] ? 1 : 0.8,
-                  transform: visibleCards[record.id] ? 'translateY(0)' : 'translateY(25px)',
-                  transition: 'opacity 0.1s ease-out, transform 0.2s ease-out',
-                }}
-              >
-                <CardContent sx={{textAlign: 'left'}}>
-                  <Typography variant="h6">{record.name}</Typography>
-                  <Typography variant="body1">Phone Number: {record.phoneNumber}</Typography>
-                  <Typography variant="body2">Start Date: {moment(record.startDate).format('MMMM Do YYYY')}</Typography>
-                </CardContent>
-              </Card>
+              <ButtonBase focusRipple sx={{ width: '100%', display: 'block' }}>
+                <Card
+                  id={record.id}
+                  className="archive-card"
+                  sx={{
+                    opacity: visibleCards[record.id] ? 1 : 0.8,
+                    transform: visibleCards[record.id]
+                      ? 'translateY(0)'
+                      : 'translateY(25px)',
+                    transition: 'opacity 0.1s ease-out, transform 0.2s ease-out',
+                  }}
+                >
+                  <CardContent sx={{ textAlign: 'left' }}>
+                    <Typography variant="h6">{record.name}</Typography>
+                    <Typography variant="body1">
+                      Phone Number: {record.phoneNumber}
+                    </Typography>
+                    <Typography variant="body2">
+                      Start Date: {moment(record.startDate).format('MMMM Do YYYY')}
+                    </Typography>
+                  </CardContent>
+                </Card>
               </ButtonBase>
             </Grid>
           ))}
@@ -159,14 +195,16 @@ const Archive = () => {
             position: 'fixed',
             bottom: 80,
             right: 20,
-            backgroundColor: theme.palette.mode === 'dark' ? '#fff' : '#000',
+            backgroundColor:
+              theme.palette.mode === 'dark' ? '#fff' : '#000',
             color: theme.palette.mode === 'dark' ? '#000' : '#fff',
             borderRadius: '50%',
             padding: '10px',
             boxShadow: 3,
             zIndex: 9999,
             '&:hover': {
-              backgroundColor: theme.palette.mode === 'dark' ? '#ddd' : '#444',
+              backgroundColor:
+                theme.palette.mode === 'dark' ? '#ddd' : '#444',
             },
           }}
         >

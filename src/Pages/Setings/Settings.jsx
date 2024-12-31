@@ -129,7 +129,7 @@ const Settings = ({ darkMode, setDarkMode, transitionsEnabled, setTransitionsEna
         </CardContent>
       </Card>
       </ButtonBase>
-      <p style={{ position: 'absolute', bottom: 0, left: '50%', transform: 'translateX(-50%)', textAlign: 'center'}}>Version 0.1.1</p>
+      <p style={{ position: 'absolute', bottom: 0, left: '50%', transform: 'translateX(-50%)', textAlign: 'center'}}>Version 0.1.2</p>
     </Box>
   );
 };
