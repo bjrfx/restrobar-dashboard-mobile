@@ -190,7 +190,8 @@ const Home = () => {
         <Toolbar sx={{ justifyContent: "space-between" }}>
           <Box component="img" src={logo} alt="Logo" sx={{ height: 40 }} />
           <Typography variant="p" sx={{ marginLeft: "auto" }}>
-            {userData?.name ? `${userData.name}'s Dashboard` : "Dashboard"}
+            {/* {userData?.name ? `${userData.name}'s Dashboard` : "Dashboard"} */}
+            {loading ? <Skeleton width="200px" /> : userData?.name ? `${userData.name}'s Dashboard` : "Dashboard"}
           </Typography>
         </Toolbar>
       </AppBar>

@@ -14,7 +14,6 @@ import Signup from './Pages/signup/Signup';
 import { AuthProvider } from './Components/Auth/AuthContext';
 import PrivateRoute from './Components/Auth/PrivateRoute';
 import ForgotPassword from './Pages/PasswordReset/ForgotPassword';
-// import RequestNotificationPermission from './Components/NotificationPermission/RequestNotificationPermission';
 import { AnimatePresence, motion } from 'framer-motion';
 
 const App = () => {
@@ -22,6 +21,7 @@ const App = () => {
   const location = useLocation();
   const [darkMode, setDarkMode] = useState(true);
   const [transitionsEnabled, setTransitionsEnabled] = useState(true);
+  const [desktopModeEnabled, setDesktopModeEnabled] = useState(false); // New state
   const [direction, setDirection] = useState(1); // 1 for forward, -1 for backward
 
   const theme = createTheme({
@@ -32,11 +32,11 @@ const App = () => {
 
   useEffect(() => {
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    if (!isMobile) {
-      alert("This application is only compatible with mobile devices.");
+    if (!isMobile && !desktopModeEnabled) {
+      alert('Please enable Desktop Mode in settings.');
       navigate('/');
     }
-  }, [navigate]);
+  }, [navigate, desktopModeEnabled]);
 
   const handleNavigation = (path) => {
     const paths = ['/', '/reservation', '/subscription', '/archive', '/settings'];
@@ -49,7 +49,6 @@ const App = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      {/* <RequestNotificationPermission /> */}
       <CssBaseline />
       <AuthProvider>
         <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
@@ -133,6 +132,8 @@ const App = () => {
                         darkMode={darkMode}
                         transitionsEnabled={transitionsEnabled}
                         setTransitionsEnabled={setTransitionsEnabled}
+                        desktopModeEnabled={desktopModeEnabled}
+                        setDesktopModeEnabled={setDesktopModeEnabled} // Pass down the prop
                       />
                     </motion.div>
                   }
@@ -142,9 +143,9 @@ const App = () => {
           </div>
           <InstallPrompt />
         </div>
-        <LabelBottomNavigation 
-          onNavigate={handleNavigation} 
-          style={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 1000 }} 
+        <LabelBottomNavigation
+          onNavigate={handleNavigation}
+          style={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 1000 }}
         />
       </AuthProvider>
     </ThemeProvider>
