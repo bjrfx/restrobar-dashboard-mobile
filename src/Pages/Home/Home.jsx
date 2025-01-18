@@ -28,6 +28,7 @@ import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import moment from "moment";
 import logo from "../../logo.png";
 import UserInfo from "../../Components/UserInfo/UserInfo";
+import { useNavigate } from "react-router-dom";
 
 ChartJS.register(
   CategoryScale,
@@ -184,6 +185,9 @@ const Home = () => {
     ],
   };
 
+  //useNavigate hook
+  const navigate = useNavigate();
+
   return (
     <Box sx={{ padding: 0, margin: 0 }}>
       <AppBar position="sticky" sx={{ margin: 0, top: 0, left: 0, right: 0, boxShadow: "none" }}>
@@ -219,7 +223,7 @@ const Home = () => {
             </Card>
           </Grid>
           <Grid item xs={12} sm={6} md={4}>
-            <Card>
+            <Card onClick={() => navigate('/reservation')}>
               <CardContent>
                 <Typography variant="h6" align="center">Active Reservations</Typography>
                 {loading ? <Skeleton variant="text" width="80%" /> : <Typography variant="h4" align="center">{activeReservations}</Typography>}
@@ -227,7 +231,7 @@ const Home = () => {
             </Card>
           </Grid>
           <Grid item xs={12} sm={6} md={4}>
-            <Card>
+            <Card onClick={() => navigate('/archive')}>
               <CardContent>
                 <Typography variant="h6" align="center">Total Archives</Typography>
                 {loading ? <Skeleton variant="text" width="80%" /> : <Typography variant="h4" align="center">{totalArchives}</Typography>}

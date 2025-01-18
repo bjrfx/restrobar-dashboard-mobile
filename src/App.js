@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
+// import React, { useEffect, useState } from 'react';
 import { Route, Routes, useNavigate, useLocation } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -30,13 +31,13 @@ const App = () => {
     },
   });
 
-  useEffect(() => {
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    if (!isMobile && !desktopModeEnabled) {
-      alert('Please enable Desktop Mode in settings.');
-      navigate('/');
-    }
-  }, [navigate, desktopModeEnabled]);
+  // useEffect(() => {
+  //   const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  //   if (!isMobile && !desktopModeEnabled) {
+  //     alert('Please enable Desktop Mode in settings.');
+  //     navigate('/');
+  //   }
+  // }, [navigate, desktopModeEnabled]);
 
   const handleNavigation = (path) => {
     const paths = ['/', '/reservation', '/subscription', '/archive', '/settings'];
