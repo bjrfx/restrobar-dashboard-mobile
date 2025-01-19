@@ -71,11 +71,15 @@ const Reservation = () => {
     fetchReservations();
   }, []);
 
-  const filteredReservations = reservations.filter((record) =>
-    moment(record.startDate).isSameOrAfter(moment(), 'day') &&
-    (record.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      record.phone.includes(searchTerm))
-  );
+  const filteredReservations = reservations.filter((record) => {
+    const recordName = record.name?.toLowerCase() || ''; // Use an empty string if name is undefined
+    const recordPhone = record.phone || ''; // Use an empty string if phone is undefined
+  
+    return (
+      moment(record.startDate).isSameOrAfter(moment(), 'day') &&
+      (recordName.includes(searchTerm.toLowerCase()) || recordPhone.includes(searchTerm))
+    );
+  });
 
   useEffect(() => {
     const handleScroll = () => {
@@ -142,7 +146,7 @@ const Reservation = () => {
         onChange={(e) => setSearchTerm(e.target.value)}
         sx={{ marginBottom: 2 }}
       />
-
+      {/* I need a turn on switch or a button here. when i turn on this i want edit and delete buttons should be enabled.*/}
       {loading ? (
         <Grid container spacing={2} justifyContent="center">
           {[...Array(3)].map((_, index) => (
@@ -174,6 +178,8 @@ const Reservation = () => {
                     transition: 'opacity 0.2s ease-out, transform 0.2s ease-out',
                   }}
                 >
+                  {/* when clicked on delete my card should delete from database. And if clicked on edit i should be able to edit and when i click on tickmark button the data should change also in database.  */}
+                  {/* These ButtonBase for delete and edit css are not perfect, please write a better related code, i need these buttons on right end side of the */}
                   <CardContent sx={{ textAlign: 'left' }}>
                     <Typography variant="h6">{reservation.name}</Typography>
                     <Typography variant="body2">

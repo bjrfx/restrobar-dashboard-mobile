@@ -133,7 +133,7 @@ const Settings = ({
           sx={{ position: "absolute", top: 16, right: 16 }}
           onClick={() => navigate("/signin")}
         >
-          Signin
+          Login
         </Button>
       )}
 
@@ -151,30 +151,39 @@ const Settings = ({
           />
         </Avatar>
       </Box>
-      <ButtonBase focusRipple sx={{ width: "100%", display: "block" }}>
-        <Card sx={{ marginBottom: 2, marginTop: 10 }}>
-          <CardContent sx={{ textAlign: "left" }}>
-            <Typography variant="h6" gutterBottom>
-              User Information
-            </Typography>
-            {userData ? (
-              <Box>
-                <Typography variant="body1">
-                  <strong>Name:</strong> {userData.name}
-                </Typography>
-                <Typography variant="body1">
-                  <strong>Email:</strong> {userData.email}
-                </Typography>
-              </Box>
-            ) : (
-              <Box>
-                <Skeleton variant="text" width={150} height={30} />
-                <Skeleton variant="text" width={200} height={30} />
-              </Box>
-            )}
-          </CardContent>
-        </Card>
-      </ButtonBase>
+      <ButtonBase
+  focusRipple
+  disableRipple
+  sx={{
+    width: "100%",
+    display: "block",
+    position: "relative",
+    zIndex: -1, // Ensures it does not overlap interactive elements
+  }}
+>
+  <Card sx={{ marginBottom: 2, marginTop: 10 }}>
+    <CardContent sx={{ textAlign: "left" }}>
+      <Typography variant="h6" gutterBottom>
+        User Information
+      </Typography>
+      {userData ? (
+        <Box>
+          <Typography variant="body1">
+            <strong>Name:</strong> {userData.name}
+          </Typography>
+          <Typography variant="body1">
+            <strong>Email:</strong> {userData.email}
+          </Typography>
+        </Box>
+      ) : (
+        <Box>
+          <Skeleton variant="text" width={150} height={30} />
+          <Skeleton variant="text" width={200} height={30} />
+        </Box>
+      )}
+    </CardContent>
+  </Card>
+</ButtonBase>
 
       <Divider sx={{ marginBottom: 2 }} />
       <ButtonBase focusRipple sx={{ width: "100%", display: "block" }}>
